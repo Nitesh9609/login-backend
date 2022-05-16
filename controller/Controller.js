@@ -46,7 +46,7 @@ exports.signUp = async (req,res) =>{
                 })
 
                 const saveUser = await user.save()
-                res.send('user created successfully')
+                res.send(saveUser)
             }
             else{
                 res.send('Password doesnot match ')
@@ -83,11 +83,49 @@ exports.signIn = async (req,res) =>{
         if(error) return res.status(400).send(error.details[0].message)
         else{
             const token = jwt.sign({_id: user._id}, process.env.TOKEN_SECRET)
-            
-            res.header("auth-token", token).send(token)
+            res.header("auth-token", token).send(token) 
+         
+
             // res.send("Logged in successfully")
         }
+        
+
     } catch (error) {
         res.status(500).send(error)
+    }
+}
+
+// exports.signIn = async (req,res) =>{
+//     const user = await userData.findOne({email:req.body.email})
+//     if(!user) return res.status(400).send('Please SignUp First')
+//     const validatePassword = await bcrypt.compare(req.body.password, user.password)
+//     if(!validatePassword) return res.status(400).send('incorrect password')
+//     try {
+//         res.send(user)
+//     } catch (error) {
+//         res.send(error)
+//     }
+// }
+
+
+
+// get user
+
+
+exports.getAll =async (req,res) =>{
+    const getAllUser = await userData.find()
+    try{
+        res.send(getAllUser)
+    }catch(error){
+        res.send(error)
+    }
+}
+
+exports.getPerticularUser = async (req,res) =>{
+    const getUser = await userData.findOne({_id:req.params.id})
+    try {
+        res.send(getUser)
+    } catch (error) {
+        res.send(error)
     }
 }
